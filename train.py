@@ -114,7 +114,7 @@ parameters['lr_method'] = opts.lr_method
 
 # Check parameters validity
 assert os.path.isfile(opts.train)
-assert os.path.isfile(opts.dev)
+#assert os.path.isfile(opts.dev)
 assert os.path.isfile(opts.test)
 assert parameters['char_dim'] > 0 or parameters['word_dim'] > 0
 assert 0. <= parameters['dropout'] < 1.0
@@ -142,12 +142,12 @@ tag_scheme = parameters['tag_scheme']
 
 # Load sentences
 train_sentences = loader.load_sentences(opts.train, lower, zeros)
-dev_sentences = loader.load_sentences(opts.dev, lower, zeros)
+#dev_sentences = loader.load_sentences(opts.dev, lower, zeros)
 test_sentences = loader.load_sentences(opts.test, lower, zeros)
 
 # Use selected tagging scheme (IOB / IOBES)
 update_tag_scheme(train_sentences, tag_scheme)
-update_tag_scheme(dev_sentences, tag_scheme)
+#update_tag_scheme(dev_sentences, tag_scheme)
 update_tag_scheme(test_sentences, tag_scheme)
 
 # Create a dictionary / mapping of words
@@ -173,15 +173,18 @@ dico_tags, tag_to_id, id_to_tag = tag_mapping(train_sentences)
 train_data = prepare_dataset(
     train_sentences, word_to_id, char_to_id, tag_to_id, lower
 )
-dev_data = prepare_dataset(
-    dev_sentences, word_to_id, char_to_id, tag_to_id, lower
-)
+#dev_data = prepare_dataset(
+#    dev_sentences, word_to_id, char_to_id, tag_to_id, lower
+#)
 test_data = prepare_dataset(
     test_sentences, word_to_id, char_to_id, tag_to_id, lower
 )
 
-print "%i / %i / %i sentences in train / dev / test." % (
-    len(train_data), len(dev_data), len(test_data))
+#print "%i / %i / %i sentences in train / dev / test." % (
+#    len(train_data), len(dev_data), len(test_data))
+
+print "%i / %i sentences in train / test." % (
+    len(train_data), len(test_data))
 
 # Save the mappings to disk
 print 'Saving the mappings to disk...'
@@ -209,6 +212,7 @@ for epoch in xrange(n_epochs):
     epoch_costs = []
     print "Starting epoch %i..." % epoch
     for i, index in enumerate(np.random.permutation(len(train_data))):
+	
         count += 1
         input = create_input(train_data[index], parameters, True, singletons)
         new_cost = f_train(*input)
@@ -217,18 +221,19 @@ for epoch in xrange(n_epochs):
             #print "%i, cost average: %f" % (i, np.mean(epoch_costs[-50:]))
 	    pass
         if count % freq_eval == 0:
-            dev_score = evaluate(parameters, f_eval, dev_sentences,
-                                 dev_data, id_to_tag, dico_tags)
+            #dev_score = evaluate(parameters, f_eval, dev_sentences,
+            #                     dev_data, id_to_tag, dico_tags)
             test_score = evaluate(parameters, f_eval, test_sentences,
                                   test_data, id_to_tag, dico_tags)
-            print "Score on dev: %.5f" % dev_score
-            print "Score on test: %.5f" % test_score
-            if dev_score > best_dev:
-                best_dev = dev_score
-                print "New best score on dev."
-                print "Saving model to disk..."
-                model.save()
+            #print "Score on dev: %.5f" % dev_score
+            #print "Score on test: %.5f" % test_score
+            #if dev_score > best_dev:
+            #    best_dev = dev_score
+            #    print "New best score on dev."
+            #    print "Saving model to disk..."
+            #    model.save()
             if test_score > best_test:
                 best_test = test_score
                 print "New best score on test."
-    print "Epoch %i done. Average cost: %f" % (epoch, np.mean(epoch_costs))
+    #print "Epoch %i done. Average cost: %f" % (epoch, np.mean(epoch_costs))
+    print "Epoch %i done." % (epoch)
