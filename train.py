@@ -200,8 +200,8 @@ if opts.reload:
 #
 singletons = set([word_to_id[k] for k, v
                   in dico_words_train.items() if v == 1])
-n_epochs = 100  # number of epochs over the training set
-freq_eval = 1000  # evaluate on dev every freq_eval steps
+n_epochs = 5  # number of epochs over the training set
+freq_eval = len(train_data)-1  # evaluate on dev every freq_eval steps
 best_dev = -np.inf
 best_test = -np.inf
 count = 0
@@ -214,7 +214,8 @@ for epoch in xrange(n_epochs):
         new_cost = f_train(*input)
         epoch_costs.append(new_cost)
         if i % 50 == 0 and i > 0 == 0:
-            print "%i, cost average: %f" % (i, np.mean(epoch_costs[-50:]))
+            #print "%i, cost average: %f" % (i, np.mean(epoch_costs[-50:]))
+	    pass
         if count % freq_eval == 0:
             dev_score = evaluate(parameters, f_eval, dev_sentences,
                                  dev_data, id_to_tag, dico_tags)
